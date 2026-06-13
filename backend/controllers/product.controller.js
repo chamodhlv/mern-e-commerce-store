@@ -99,3 +99,74 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getRecommendedProducts = async (req, res) => {
+  try {
+    const products = await Product.aggregate([
+      { $sample: { size: 3 } },
+      // Randomly select 3 products
+
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          description: 1,
+          price: 1,
+          image: 1,
+          category: 1,
+        },
+      },
+    ]);
+    res.json({ products });
+  } catch (error) {
+    console.error("Error fetching recommended products:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getProductsByCategory = async (req, res) => {
+  const { category } = req.params;
+
+  try {
+    const products = await Product.find({ category });
+    res.json({ products });
+  } catch (error) {
+    console.error("Error fetching products by category:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const toggleFeaturedProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      product.isFeatured = !product.isFeatured;
+      const updatedProduct = await product.save();
+      await updateFeaturedProductsCache(); // Update Redis cache after toggling
+      res.json({
+        message: "Product featured status toggled",
+        product: updatedProduct,
+      });
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    console.error("Error toggling featured status:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+async function updateFeaturedProductsCache() {
+  try {
+    const featuredProducts = await Product.find({ isFeatured: true }).lean();
+    await redis.set(
+      "featured_products",
+      JSON.stringify(featuredProducts),
+      "EX",
+      3600,
+    );
+  } catch (error) {
+    console.error("Error updating featured products cache:", error);
+  }
+}
