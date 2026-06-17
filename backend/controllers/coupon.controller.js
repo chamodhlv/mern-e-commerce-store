@@ -1,8 +1,8 @@
-import Coupon from "../models/coupon.model.js";
+import Coupon from "../models/Coupon.model.js";
 
 export const getCoupons = async (req, res) => {
   try {
-    const coupons = await Coupon.findOne({
+    const coupons = await Coupon.find({
       userId: req.user._id,
       isActive: true,
     });
