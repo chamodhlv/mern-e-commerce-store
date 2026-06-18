@@ -2,7 +2,7 @@ import User from "../models/User.model.js";
 import Product from "../models/Product.model.js";
 import Order from "../models/Order.model.js";
 
-export const getAnaliticsData = async () => {
+export const getAnalyticsData = async () => {
   const totalUsers = await User.countDocuments();
   const totalProducts = await Product.countDocuments();
 
@@ -29,37 +29,42 @@ export const getAnaliticsData = async () => {
 };
 
 export const getDailySalesData = async (startDate, endDate) => {
-  const dailySalesData = await Order.aggregate([
-    {
-      $match: {
-        createdAt: {
-          $gte: startDate,
-          $lte: endDate,
+  try {
+    const dailySalesData = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startDate,
+            $lte: endDate,
+          },
         },
       },
-    },
-    {
-      $group: {
-        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-        sales: { $sum: 1 },
-        revenue: { $sum: "$totalAmount" },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          sales: { $sum: 1 },
+          revenue: { $sum: "$totalAmount" },
+        },
       },
-    },
-    {
-      $sort: { _id: 1 },
-    },
-  ]);
-  const dateArray = generateDateArray(startDate, endDate);
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+    const dateArray = generateDateArray(startDate, endDate);
 
-  return dateArray.map((date) => {
-    const foundData = dailySalesData.find((data) => data._id === date);
+    return dateArray.map((date) => {
+      const foundData = dailySalesData.find((data) => data._id === date);
 
-    return {
-      date,
-      sales: foundData ? foundData.sales : 0,
-      revenue: foundData ? foundData.revenue : 0,
-    };
-  });
+      return {
+        date,
+        sales: foundData ? foundData.sales : 0,
+        revenue: foundData ? foundData.revenue : 0,
+      };
+    });
+  } catch (error) {
+    console.error("Error fetching daily sales data:", error);
+    throw new Error("Error fetching daily sales data");
+  }
 };
 
 function generateDateArray(startDate, endDate) {
