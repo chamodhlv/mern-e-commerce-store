@@ -1,0 +1,25 @@
+import express from express;
+import { protectRoute, adminRoute} from "../middleware/auth.middleware.js";
+
+const router = express.Router();
+
+router.get("/", protectRoute, adminRoute, async (req, res) => {
+    try{
+        const analiticsData = await getAnaliticsData(); 
+
+        const endDate = new Date();
+        const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000); 
+
+        const dailySalesData = await getDailySalesData(startDate, endDate);
+
+        res.json({ 
+            analiticsData, 
+            dailySalesData 
+        });    
+    }catch (error) {
+        console.error("Error fetching analitics data:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+export default router;
