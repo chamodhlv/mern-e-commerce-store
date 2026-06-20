@@ -28,4 +28,20 @@ export const useUserStore = create((set, get) => ({
       toast.error(error.response?.data?.message || "Signup failed");
     }
   },
+
+  login: async ({ email, password }) => {
+    set({ loading: true });
+
+    try {
+      const res = await axios.post("/auth/login", {
+        email,
+        password,
+      });
+      set({ user: res.data.user, loading: false });
+      toast.success("Login successful!");
+    } catch (error) {
+      set({ loading: false });
+      toast.error(error.response?.data?.message || "Login failed");
+    }
+  },
 }));
