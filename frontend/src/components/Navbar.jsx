@@ -16,9 +16,9 @@ const Navbar = () => {
         <div className="flex flex-wrap justify-between items-center">
           <Link
             to="/"
-            className="text-2xl font-bold text-blue-200 items-center space-x-2 flex"
+            className="text-5xl font-bold text-blue-200 items-center space-x-2 flex mb-3"
           >
-            E-Commerce
+            Shopzy
           </Link>
 
           <nav className="flex flex-wrap items-center gap-4">
