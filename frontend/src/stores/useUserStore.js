@@ -44,4 +44,14 @@ export const useUserStore = create((set, get) => ({
       toast.error(error.response?.data?.message || "Login failed");
     }
   },
+
+  checkAuth: async () => {
+    set({ checkingAuth: true });
+    try {
+      const res = await axios.get("/auth/profile");
+      set({ user: res.data, checkingAuth: false });
+    } catch (error) {
+      set({ user: null, checkingAuth: false });
+    }
+  },
 }));
