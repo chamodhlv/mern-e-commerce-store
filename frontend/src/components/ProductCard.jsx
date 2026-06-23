@@ -1,14 +1,15 @@
 import toast from "react-hot-toast";
 import { ShoppingCart } from "lucide-react";
 import { useUserStore } from "../stores/useUserStore";
+import { useCartStore } from "../stores/useCartStore";
 
 const ProductCard = ({ product }) => {
   const { user } = useUserStore();
+  const { addToCart } = useCartStore();
   const fallbackImage =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'%3E%3Crect width='640' height='480' fill='%231f2937'/%3E%3Cpath d='M120 360 255 220l90 95 55-60 120 105H120Z' fill='%23374151'/%3E%3Ccircle cx='430' cy='160' r='48' fill='%234b5563'/%3E%3C/svg%3E";
   const imageSrc = product.image?.trim() || fallbackImage;
 
-  //const { addToCart } = useCartStore();
   const handleAddToCart = () => {
     if (!user) {
       toast.error("Please login to add products to cart", { id: "login" });
