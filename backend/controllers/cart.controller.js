@@ -71,8 +71,13 @@ export const removeAllFromCart = async (req, res) => {
 export const updateQuantity = async (req, res) => {
   try {
     const { id: productId } = req.params;
-    const { quantity } = req.body;
+    const quantity = Number(req.body.quantity);
     const user = req.user;
+
+    if (!Number.isInteger(quantity) || quantity < 0) {
+      return res.status(400).json({ message: "Invalid quantity" });
+    }
+
     const existingItem = user.cartItems.find(
       (item) => item.product.toString() === productId,
     );

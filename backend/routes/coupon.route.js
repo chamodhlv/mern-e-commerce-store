@@ -8,6 +8,6 @@ import {
 const router = express.Router();
 
 router.get("/", protectRoute, getCoupons);
-router.get("/validate", protectRoute, validateCoupon);
+router.post("/validate", protectRoute, validateCoupon);
 
 export default router;
