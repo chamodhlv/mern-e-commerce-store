@@ -50,25 +50,25 @@ const AnalyticsTab = () => {
           title="Total Users"
           value={analyticsData.users.toLocaleString()}
           icon={Users}
-          color="from-emerald-500 to-teal-700"
+          color="from-blue-500 to-indigo-700"
         />
         <AnalyticsCard
           title="Total Products"
           value={analyticsData.products.toLocaleString()}
           icon={Package}
-          color="from-emerald-500 to-green-700"
+          color="from-blue-500 to-cyan-700"
         />
         <AnalyticsCard
           title="Total Sales"
           value={analyticsData.totalSales.toLocaleString()}
           icon={ShoppingCart}
-          color="from-emerald-500 to-cyan-700"
+          color="from-blue-500 to-sky-700"
         />
         <AnalyticsCard
           title="Total Revenue"
           value={`$${analyticsData.totalRevenue.toLocaleString()}`}
           icon={DollarSign}
-          color="from-emerald-500 to-lime-700"
+          color="from-blue-500 to-violet-700"
         />
       </div>
       <motion.div
@@ -89,7 +89,7 @@ const AnalyticsTab = () => {
               yAxisId="left"
               type="monotone"
               dataKey="sales"
-              stroke="#10B981"
+              stroke="#3B82F6"
               activeDot={{ r: 8 }}
               name="Sales"
             />
@@ -97,7 +97,7 @@ const AnalyticsTab = () => {
               yAxisId="right"
               type="monotone"
               dataKey="revenue"
-              stroke="#3B82F6"
+              stroke="#818CF8"
               activeDot={{ r: 8 }}
               name="Revenue"
             />
@@ -118,12 +118,12 @@ const AnalyticsCard = ({ title, value, icon: Icon, color }) => (
   >
     <div className="flex justify-between items-center">
       <div className="z-10">
-        <p className="text-emerald-300 text-sm mb-1 font-semibold">{title}</p>
+        <p className="text-blue-300 text-sm mb-1 font-semibold">{title}</p>
         <h3 className="text-white text-3xl font-bold">{value}</h3>
       </div>
     </div>
-    <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 to-emerald-900 opacity-30" />
-    <div className="absolute -bottom-4 -right-4 text-emerald-800 opacity-50">
+    <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-900 opacity-30" />
+    <div className="absolute -bottom-4 -right-4 text-blue-800 opacity-50">
       <Icon className="h-32 w-32" />
     </div>
   </motion.div>

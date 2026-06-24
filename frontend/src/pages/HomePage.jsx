@@ -2,7 +2,6 @@ import React from "react";
 import CategoryItem from "../components/CategoryItem.jsx";
 import { useProductStore } from "../stores/useProductStore.js";
 import { useEffect } from "react";
-import { Feature } from "framer-motion";
 import FeaturedProducts from "../components/FeaturedProducts.jsx";
 
 const categories = [
@@ -45,3 +44,4 @@ const HomePage = () => {
   );
 };
 export default HomePage;
+
