@@ -1,31 +1,47 @@
 import Coupon from "../models/Coupon.model.js";
 import Order from "../models/Order.model.js";
 import stripe from "../lib/stripe.js";
+import User from "../models/User.model.js";
 
 export const createCheckoutSession = async (req, res) => {
   try {
-    const { productId, couponCode } = req.body;
+    const products = req.body.products || req.body.productId;
+    const { couponCode } = req.body;
 
-    if (!Array.isArray(productId) || productId.length === 0) {
+    if (!Array.isArray(products) || products.length === 0) {
       return res.status(400).json({
-        message: "Invalid productId. It should be a non-empty array.",
+        message: "Invalid products. It should be a non-empty array.",
       });
     }
 
     let totalAmount = 0;
 
-    const lineItems = productId.map((product) => {
-      const amount = Math.round(product.price * 100);
-      totalAmount += amount * product.quantity;
+    const lineItems = products.map((product) => {
+      const quantity = Number(product.quantity) || 1;
+      const amount = Math.round(Number(product.price) * 100);
+      const imageUrl = product.image?.startsWith("http") ? product.image : null;
+
+      if (!product.name || !Number.isInteger(amount) || amount <= 0) {
+        throw new Error("Cart contains an invalid product.");
+      }
+
+      totalAmount += amount * quantity;
+
+      const productData = {
+        name: product.name,
+      };
+
+      if (imageUrl) {
+        productData.images = [imageUrl];
+      }
+
       return {
         price_data: {
           currency: "usd",
-          product_data: {
-            name: product.name,
-            image: product.image,
-          },
+          product_data: productData,
           unit_amount: amount,
         },
+        quantity,
       };
     });
 
@@ -37,7 +53,9 @@ export const createCheckoutSession = async (req, res) => {
         isActive: true,
       });
       if (coupon) {
-        totalAmount += Math.round(totalAmount * (coupon.discount / 100));
+        totalAmount -= Math.round(
+          totalAmount * (coupon.discountPercentage / 100),
+        );
       }
     }
 
@@ -58,23 +76,28 @@ export const createCheckoutSession = async (req, res) => {
         userId: req.user._id.toString(),
         couponCode: couponCode || "",
         products: JSON.stringify(
-          productId.map((p) => ({
+          products.map((p) => ({
             id: p._id,
-            quantity: p.quantity,
+            quantity: Number(p.quantity) || 1,
             price: p.price,
           })),
         ),
       },
     });
 
-    if (totalAmount >= 20000) {
-      await createNewCoupon(req.user._id);
-    }
-
-    res.status(200).json({ id: session.id, totalAmount: totalAmount / 100 });
+    res.status(200).json({
+      id: session.id,
+      url: session.url,
+      totalAmount: totalAmount / 100,
+    });
   } catch (error) {
     console.error("Error creating checkout session:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message:
+        process.env.NODE_ENV === "production"
+          ? "Internal server error"
+          : error.message,
+    });
   }
 };
 
@@ -106,6 +129,14 @@ export const checkoutSuccess = async (req, res) => {
         stripeSessionId: session.id,
       });
       await newOrder.save();
+
+      // Clear user's cart in the database
+      await User.findByIdAndUpdate(session.metadata.userId, { cartItems: [] });
+
+      if (session.amount_total >= 20000) {
+        await createNewCoupon(session.metadata.userId);
+      }
+
       res.status(200).json({
         success: true,
         message: "Order created successfully",
@@ -127,13 +158,16 @@ async function createStripeCoupon(discountPercentage) {
 }
 
 async function createNewCoupon(userId) {
-  const newCoupon = new Coupon({
-    code: "GIFT" + Math.random().toString(36).substring(2, 8).toUpperCase(),
-    discountPercentage: 10,
-    expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    userId: userId,
-  });
-  await newCoupon.save();
+  const coupon = await Coupon.findOneAndUpdate(
+    { userId },
+    {
+      code: "GIFT" + Math.random().toString(36).substring(2, 8).toUpperCase(),
+      discountPercentage: 10,
+      expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      isActive: true,
+    },
+    { new: true, upsert: true, setDefaultsOnInsert: true },
+  );
 
-  return newCoupon;
+  return coupon;
 }

@@ -1,13 +1,17 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, UserPlus, LogIn, LogOut, Lock } from "lucide-react";
 import { useUserStore } from "../stores/useUserStore.js";
+import { useCartStore } from "../stores/useCartStore.js";
 
 const Navbar = () => {
   const { user, logout } = useUserStore();
+  const { cart } = useCartStore();
+  const cartItemCount = cart.reduce(
+    (total, item) => total + (item.quantity || 1),
+    0,
+  );
 
   const isAdmin = user?.role === "admin";
-  const cart = user?.cart || [];
 
   return (
     <header className="fixed top-0 left-0 w-full bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-lg z-40 transition-all duration-300 border-b border-blue-400">
@@ -40,12 +44,12 @@ const Navbar = () => {
                   size={22}
                 />
                 <span className="hidden sm:inline">Cart</span>
-                {cart.length > 0 && (
+                {cartItemCount > 0 && (
                   <span
                     className="absolute -top-2 -left-2 bg-orange-500 text-white rounded-full px-2 py-0.5 
 									text-xs group-hover:bg-orange-600 transition duration-300 ease-in-out"
                   >
-                    {cart.length}
+                    {cartItemCount}
                   </span>
                 )}
               </Link>
