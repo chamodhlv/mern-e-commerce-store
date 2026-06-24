@@ -84,4 +84,17 @@ export const useProductStore = create((set, get) => ({
       );
     }
   },
+
+  fetchFeaturedProducts: async () => {
+    set({ loading: true });
+    try {
+      const res = await axios.get("/products/featured");
+      set({ products: res.data.products, loading: false });
+    } catch (error) {
+      set({ loading: false });
+      toast.error(
+        error.response?.data?.message || "Failed to fetch featured products",
+      );
+    }
+  },
 }));
