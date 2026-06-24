@@ -1,6 +1,7 @@
 import Coupon from "../models/Coupon.model.js";
 import Order from "../models/Order.model.js";
 import stripe from "../lib/stripe.js";
+import User from "../models/User.model.js";
 
 export const createCheckoutSession = async (req, res) => {
   try {
@@ -128,6 +129,9 @@ export const checkoutSuccess = async (req, res) => {
         stripeSessionId: session.id,
       });
       await newOrder.save();
+
+      // Clear user's cart in the database
+      await User.findByIdAndUpdate(session.metadata.userId, { cartItems: [] });
 
       if (session.amount_total >= 20000) {
         await createNewCoupon(session.metadata.userId);
