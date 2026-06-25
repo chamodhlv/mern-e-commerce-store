@@ -1,3 +1,5 @@
+![App Showcase](./screenshots/homepage-screenshot.png)
+
 # Shopzy E-Commerce Store 🛒✨
 
 An elegant, full-featured MERN (MongoDB, Express, React, Node.js) e-commerce application styled with a premium dark blue glow theme. The platform handles user authentication, product management, dynamic cart updates, discount coupons, secure payments with Stripe, and displays key metrics through a live admin analytics dashboard.
@@ -6,35 +8,37 @@ An elegant, full-featured MERN (MongoDB, Express, React, Node.js) e-commerce app
 
 ## 🚀 Key Features
 
-*   **Premium Blue Theme UI**: Implemented with Tailwind CSS v4, Framer Motion transitions, custom responsive scroll containers, and dark-mode glassmorphism.
-*   **Secure Authentication**: Custom JWT flow using access/refresh tokens stored securely in HTTP-only cookies.
-*   **Product Exploration**: Browse items categorized cleanly (Jeans, T-shirts, Shoes, Glasses, Jackets, Suits, Bags) with lazy-loaded image grids.
-*   **Dynamic Cart System**: Local Zustand state synchronized with the MongoDB database to save client cart items persistently. Includes dynamic quantity counters and a matching product recommendations panel ("People also bought").
-*   **Coupon Discount System**: Dynamic coupon validation. Reward coupons generated for users can be applied during checkout to get percentage-based discounts.
-*   **Stripe Integration**: Redirects users to Stripe's secure checkout page, processing orders and updating cart states on success.
-*   **Admin Dashboard**:
-    *   **Create Products**: Admin interface supporting Cloudinary image uploads, category selection, and descriptions.
-    *   **Manage Products**: List of all inventory items, option to toggle products as "featured", and full delete actions.
-    *   **Live Analytics**: Cards showing totals for Users, Products, Sales, and Revenue, alongside a dynamic line graph showcasing daily Sales/Revenue trends using Recharts.
+- **Premium Blue Theme UI**: Implemented with Tailwind CSS v4, Framer Motion transitions, custom responsive scroll containers, and dark-mode glassmorphism.
+- **Secure Authentication**: Custom JWT flow using access/refresh tokens stored securely in HTTP-only cookies.
+- **Product Exploration**: Browse items categorized cleanly (Jeans, T-shirts, Shoes, Glasses, Jackets, Suits, Bags) with lazy-loaded image grids.
+- **Dynamic Cart System**: Local Zustand state synchronized with the MongoDB database to save client cart items persistently. Includes dynamic quantity counters and a matching product recommendations panel ("People also bought").
+- **Coupon Discount System**: Dynamic coupon validation. Reward coupons generated for users can be applied during checkout to get percentage-based discounts.
+- **Stripe Integration**: Redirects users to Stripe's secure checkout page, processing orders and updating cart states on success.
+- **Admin Dashboard**:
+  - **Create Products**: Admin interface supporting Cloudinary image uploads, category selection, and descriptions.
+  - **Manage Products**: List of all inventory items, option to toggle products as "featured", and full delete actions.
+  - **Live Analytics**: Cards showing totals for Users, Products, Sales, and Revenue, alongside a dynamic line graph showcasing daily Sales/Revenue trends using Recharts.
 
 ---
 
 ## 🛠️ Technology Stack
 
 ### Backend
-*   **Core**: Node.js & Express
-*   **Database**: MongoDB (via Mongoose ODM)
-*   **Caching/Session store**: Redis (via Upstash Redis REST API & IORedis)
-*   **Storage**: Cloudinary API (for product image hosting)
-*   **Payments**: Stripe SDK
-*   **Security**: JSON Web Tokens (JWT) & BcryptJS
+
+- **Core**: Node.js & Express
+- **Database**: MongoDB (via Mongoose ODM)
+- **Caching/Session store**: Redis (via Upstash Redis REST API & IORedis)
+- **Storage**: Cloudinary API (for product image hosting)
+- **Payments**: Stripe SDK
+- **Security**: JSON Web Tokens (JWT) & BcryptJS
 
 ### Frontend
-*   **Core**: React 19 (Vite)
-*   **Styling**: Tailwind CSS v4 & Framer Motion (micro-animations)
-*   **State Management**: Zustand
-*   **Charts**: Recharts
-*   **Utilities**: Axios, Lucide Icons, React Confetti, React Hot Toast
+
+- **Core**: React 19 (Vite)
+- **Styling**: Tailwind CSS v4 & Framer Motion (micro-animations)
+- **State Management**: Zustand
+- **Charts**: Recharts
+- **Utilities**: Axios, Lucide Icons, React Confetti, React Hot Toast
 
 ---
 
@@ -87,11 +91,13 @@ Follow these steps to run the project locally.
 ### 1. Install Dependencies
 
 **Root & Backend:**
+
 ```bash
 npm install
 ```
 
 **Frontend Client:**
+
 ```bash
 cd frontend
 npm install
@@ -103,16 +109,16 @@ cd ..
 To run the application, you need to run **both** the backend server and Vite's frontend dev server concurrently:
 
 **Terminal 1 (Start Backend on Port 5000):**
+
 ```bash
 npm run dev
 ```
 
 **Terminal 2 (Start Frontend Client on Port 5173):**
+
 ```bash
 cd frontend
 npm run dev
 ```
 
 Open `http://localhost:5173` in your browser. The Vite server will automatically proxy all API requests to `http://localhost:5000/api`.
-
-
