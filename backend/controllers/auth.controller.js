@@ -15,7 +15,7 @@ const generateTokens = (userId) => {
 const storeRefreshToken = async (userId, refreshToken) => {
   try {
     await redis.set(`refreshToken:${userId}`, refreshToken, {
-      EX: 7 * 24 * 60 * 60, // 7 days in seconds
+      ex: 7 * 24 * 60 * 60, // 7 days in seconds
     });
   } catch (error) {
     throw new Error("Error storing refresh token");
@@ -88,7 +88,7 @@ export const login = async (req, res) => {
         message: "Logged in successfully",
       });
     } else {
-      res.status(401).json({ message: "Invalid email or password" });
+      res.status(400).json({ message: "Invalid email or password" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });

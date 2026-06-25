@@ -92,20 +92,23 @@ axios.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        if (!refreshPromise) {
+        // If there's already a refresh request in progress, wait for it
+        if (refreshPromise) {
           await refreshPromise;
           return axios(originalRequest);
         }
 
-        refreshPromise = useUserStore.getStore().refreshToken();
-
+        // Start the refresh process
+        refreshPromise = useUserStore.getState().refreshToken();
         await refreshPromise;
         refreshPromise = null;
+
         return axios(originalRequest);
       } catch (refreshError) {
         useUserStore.getState().logout();
         return Promise.reject(refreshError);
       }
     }
+    return Promise.reject(error);
   },
 );
